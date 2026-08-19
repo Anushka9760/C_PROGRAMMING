@@ -1,171 +1,165 @@
 #include <stdio.h>
 #include <string.h>
 
-char names[100][50];
-char phones[100][50];
-char emails[100][50];
-int count = 0;
-
-void addContact()
+union ExtraInfo
 {
-    if (count < 100)
-    {
-        printf("Enter name: ");
-        scanf("%49s", names[count]);
+    int code;
+    char category[20];
+};
 
-        printf("Enter phone: ");
-        scanf("%49s", phones[count]);
+struct Item
+{
+    int id;
+    char name[50];
+    int quantity;
+    float price;
+    union ExtraInfo info;
+};
 
-        printf("Enter email: ");
-        scanf("%49s", emails[count]);
+struct Item inventory[100];
 
-        count++;
-        printf("Contact added successfully!\n");
-    }
-    else
-    {
-        printf("Address book is full!\n");
-    }
+int n = 0;
+
+void addItem()
+{
+    printf("\nEnter Item ID: ");
+    scanf("%d", &inventory[n].id);
+
+    printf("Enter Item Name: ");
+    scanf(" %[^\n]", inventory[n].name);
+
+    printf("Enter Quantity: ");
+    scanf("%d", &inventory[n].quantity);
+
+    printf("Enter Price: ");
+    scanf("%f", &inventory[n].price);
+
+    printf("Enter Category: ");
+    scanf(" %[^\n]", inventory[n].info.category);
+
+    n++;
+
+    printf("\nItem added successfully!\n");
 }
 
-void displayContacts()
+void updateQuantity()
 {
-    printf("\n--- Contact List ---\n");
-    for (int i = 0; i < count; i++)
-    {
-        printf("%d. %s | %s | %s\n", i + 1, names[i], phones[i], emails[i]);
-    }
-}
+    int id;
+    int i;
+    
+    printf("\nEnter Item ID: ");
+    scanf("%d", &id);
 
-void searchContact()
-{
-    char search[50];
-    printf("Enter name to search: ");
-    scanf("%49s", search);
-
-    int found = 0;
-    for (int i = 0; i < count; i++)
+    for (i = 0; i < n; i++)
     {
-        if (strcmp(names[i], search) == 0)
+        if (inventory[i].id == id)
         {
-            printf("Found: %s | %s | %s\n", names[i], phones[i], emails[i]);
-            found = 1;
-            break;
-        }
-    }
-    if (!found)
-    {
-        printf("Contact not found!\n");
-    }
-}
+            printf("Enter new quantity: ");
+            scanf("%d", &inventory[i].quantity);
 
-void updateContact()
-{
-    char search[50];
-    printf("Enter name to update: ");
-    scanf("%49s", search);
-
-    int found = -1;
-    for (int i = 0; i < count; i++)
-    {
-        if (strcmp(names[i], search) == 0)
-        {
-            found = i;
-            break;
+            printf("\nQuantity updated successfully!\n");
+            return;
         }
     }
 
-    if (found != -1)
+    printf("\nItem not found!\n");
+}
+
+void displayInventory()
+{
+    int i;
+
+    if (n == 0)
     {
-        printf("Enter new name: ");
-        scanf("%49s", names[found]);
-
-        printf("Enter new phone: ");
-        scanf("%49s", phones[found]);
-
-        printf("Enter new email: ");
-        scanf("%49s", emails[found]);
-
-        printf("Contact updated successfully!\n");
+        printf("\nInventory is empty!\n");
+        return;
     }
-    else
+
+    printf("\n========== INVENTORY ==========\n");
+
+    for (i = 0; i < n; i++)
     {
-        printf("Contact not found!\n");
+        printf("\nItem %d\n", i + 1);
+        printf("ID       : %d\n", inventory[i].id);
+        printf("Name     : %s\n", inventory[i].name);
+        printf("Quantity : %d\n", inventory[i].quantity);
+        printf("Price    : %.2f\n", inventory[i].price);
+        printf("Category : %s\n", inventory[i].info.category);
     }
 }
 
-void deleteContact()
+void deleteItem()
 {
-    char search[50];
-    printf("Enter name to delete: ");
-    scanf("%49s", search);
+    int id;
+    int i, j;
 
-    int found = -1;
-    for (int i = 0; i < count; i++)
+    printf("\nEnter Item ID to delete: ");
+    scanf("%d", &id);
+
+    for (i = 0; i < n; i++)
     {
-        if (strcmp(names[i], search) == 0)
+        if (inventory[i].id == id)
         {
-            found = i;
-            break;
+            for (j = i; j < n - 1; j++)
+            {
+                inventory[j] = inventory[j + 1];
+            }
+
+            n--;
+
+            printf("\nItem deleted successfully!\n");
+            return;
         }
     }
 
-    if (found != -1)
-    {
-        for (int j = found; j < count - 1; j++)
-        {
-            strcpy(names[j], names[j + 1]);
-            strcpy(phones[j], phones[j + 1]);
-            strcpy(emails[j], emails[j + 1]);
-        }
-        count--;
-        printf("Contact deleted successfully!\n");
-    }
-    else
-    {
-        printf("Contact not found!\n");
-    }
+    printf("\nItem not found!\n");
 }
 
 int main()
 {
     int choice;
+
     do
     {
-        printf("\n--- Address Book ---\n");
-        printf("1. Add Contact\n");
-        printf("2. Display Contacts\n");
-        printf("3. Search Contact by Name\n");
-        printf("4. Update Contact\n");
-        printf("5. Delete Contact\n");
-        printf("6. Exit\n");
-        printf("Enter your choice: ");
+        printf("\n==============================");
+        printf("\n  INVENTORY MANAGEMENT SYSTEM");
+        printf("\n==============================");
+        printf("\n1. Add Item");
+        printf("\n2. Update Quantity");
+        printf("\n3. Display Inventory");
+        printf("\n4. Delete Item");
+        printf("\n5. Exit");
+
+        printf("\nEnter your choice: ");
         scanf("%d", &choice);
 
         switch (choice)
         {
-        case 1:
-            addContact();
-            break;
-        case 2:
-            displayContacts();
-            break;
-        case 3:
-            searchContact();
-            break;
-        case 4:
-            updateContact();
-            break;
-        case 5:
-            deleteContact();
-            break;
-        case 6:
-            printf("Exiting...\n");
-            break;
-        default:
-            printf("Invalid choice!\n");
+            case 1:
+                addItem();
+                break;
+
+            case 2:
+                updateQuantity();
+                break;
+
+            case 3:
+                displayInventory();
+                break;
+
+            case 4:
+                deleteItem();
+                break;
+
+            case 5:
+                printf("\nThank you!\n");
+                break;
+
+            default:
+                printf("\nInvalid choice!\n");
         }
-    } while (choice != 6);
+
+    } while (choice != 5);
 
     return 0;
 }

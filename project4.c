@@ -1,109 +1,167 @@
 #include <stdio.h>
 #include <string.h>
 
-char names[100][50];
-char phones[100][50];
-char emails[100][50];
-char addresses[100][100];
+char name[100][50];
+char phone[100][20];
+char email[100][50];
+char address[100][100];
+
 int count = 0;
 
-void addContact() {
-    printf("Enter Name: \n");
-    scanf("%s", names[count]);
-
-    printf("Enter Phone: \n");
-    scanf("%s", phones[count]);
-
-    printf("Enter Email: \n");
-    scanf("%s", emails[count]);
-
-    printf("Enter Address (one word): \n");
-    scanf("%s", addresses[count]);
-        count++;
-        printf("Contact added successfully!\n");
-    }
-
-void viewContacts() {
-    if (count == 0) {
-        printf("No contacts available.\n");
+void addContact()
+{
+    if (count >= 100)
+    {
+        printf("Address book is full!\n");
         return;
     }
+
+    printf("\nEnter Name: ");
+    scanf(" %[^\n]", name[count]);
+
+    printf("Enter Phone: ");
+    scanf(" %[^\n]", phone[count]);
+
+    printf("Enter Email: ");
+    scanf(" %[^\n]", email[count]);
+
+    printf("Enter Address: ");
+    scanf(" %[^\n]", address[count]);
+
+    count++;
+
+    printf("\nContact added successfully!\n");
+}
+
+void viewContacts()
+{
+    if (count == 0)
+    {
+        printf("\nNo contacts available.\n");
+        return;
+    }
+
     printf("\n--- Contact List ---\n");
-    for (int i = 0; i < count; i++) {
-        printf("%d. %s | %s | %s | %s\n", i+1,
-               names[i], phones[i], emails[i], addresses[i]);
+
+    for (int i = 0; i < count; i++)
+    {
+        printf("\nContact %d\n", i + 1);
+        printf("Name    : %s\n", name[i]);
+        printf("Phone   : %s\n", phone[i]);
+        printf("Email   : %s\n", email[i]);
+        printf("Address : %s\n", address[i]);
     }
 }
 
-void searchContact() {
-    char keyword[50];
-    printf("Enter name or phone to search: \n");
-    scanf("%s", keyword);
-
+void searchContact()
+{
+    char identity[50];
     int found = 0;
-    for (int i = 0; i < count; i++) {
-        if (strstr(names[i], keyword) || strstr(phones[i], keyword)) {
-            printf("Found: %s\n | %s\n | %s\n | %s\n",
-                   names[i], phones[i], emails[i], addresses[i]);
-            found = 1;
-        }
-    }
-    if (!found) {
-        printf("No contact found.\n");
-    }
-}
 
-void deleteContact() {
-    char name[50];
-    printf("Enter name to delete: \n");
-    scanf("%s", name);
+    printf("\nEnter name to search: ");
+    scanf(" %[^\n]", identity);
 
-    int found = 0;
-    for (int i = 0; i < count; i++) {
-        if (strcmp(names[i], name) == 0) {
-            for (int j = i; j < count - 1; j++) {
-                strcpy(names[j], names[j+1]);
-                strcpy(phones[j], phones[j+1]);
-                strcpy(emails[j], emails[j+1]);
-                strcpy(addresses[j], addresses[j+1]);
-            }
-            count--;
-            printf("Contact deleted successfully!\n");
+    for (int i = 0; i < count; i++)
+    {
+        if (strcmp(name[i], identity) == 0)
+        {
+            printf("\nContact Found!\n");
+            printf("Name    : %s\n", name[i]);
+            printf("Phone   : %s\n", phone[i]);
+            printf("Email   : %s\n", email[i]);
+            printf("Address : %s\n", address[i]);
+
             found = 1;
             break;
         }
     }
-    if (!found) {
-        printf("Contact not found.\n");
+
+    if (found == 0)
+    {
+        printf("\nContact not found.\n");
     }
 }
 
-int main() {
+void deleteContact()
+{
+    char delName[50];
+    int found = 0;
+
+    printf("\nEnter name to delete: ");
+    scanf(" %[^\n]", delName);
+
+    for (int i = 0; i < count; i++)
+    {
+        if (strcmp(name[i], delName) == 0)
+        {
+            for (int j = i; j < count - 1; j++)
+            {
+                strcpy(name[j], name[j + 1]);
+                strcpy(phone[j], phone[j + 1]);
+                strcpy(email[j], email[j + 1]);
+                strcpy(address[j], address[j + 1]);
+            }
+
+            count--;
+            found = 1;
+
+            printf("\nContact deleted successfully!\n");
+            break;
+        }
+    }
+
+    if (found == 0)
+    {
+        printf("\nContact not found.\n");
+    }
+}
+
+int main()
+{
     int choice;
-    do {
-        printf("\n--- Address Book Menu ---\n");
+
+    do
+    {
+        printf("\n============================\n");
+        printf("      ADDRESS BOOK\n");
+        printf("============================\n");
         printf("1. Add Contact\n");
         printf("2. View Contacts\n");
         printf("3. Search Contact\n");
         printf("4. Delete Contact\n");
         printf("5. Exit\n");
-        printf("Enter choice: \n");
+        printf("============================\n");
+
+        printf("Enter choice: ");
         scanf("%d", &choice);
 
-        switch(choice) {
-            case 1: addContact();
-             break;
-            case 2: viewContacts();
-             break;
-            case 3: searchContact();
-             break;
-            case 4: deleteContact();
-             break;
-            case 5: printf("Exiting...\n");
-             break;
-            default: printf("Invalid choice!\n");
+        switch (choice)
+        {
+        case 1:
+            addContact();
+            break;
+
+        case 2:
+            viewContacts();
+            break;
+
+        case 3:
+            searchContact();
+            break;
+
+        case 4:
+            deleteContact();
+            break;
+
+        case 5:
+            printf("\nExiting Address Book...\n");
+            break;
+
+        default:
+            printf("\nInvalid choice! Please try again.\n");
         }
-    } while(choice != 5);
+
+    } while (choice != 5);
 
     return 0;
 }
