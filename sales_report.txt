@@ -1,0 +1,10 @@
+========== SALES REPORT ==========
+
+ID	Product		Amount
+--------------------------------------
+344	fggvmn          456577.00
+
+========== SUMMARY ==========
+Total Sales     : 456577.00
+Average Sale    : 456577.00
+Number of Sales : 1
